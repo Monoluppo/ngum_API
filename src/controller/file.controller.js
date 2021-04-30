@@ -14,11 +14,28 @@ const { globSource } = ipfsClient
 
 const upload = async (req, res) => {
   try {
-    await uploadFile(req, res);
-    let filename = 'uploads/' + req.body.fileName // uploads/IMG_2891.JPG
-    console.log(filename)
-    let file = await ipfs.add(globSource(filename + ''))  
-    console.log(file)
+    
+    if (req.files == undefined) {
+      return res.status(400).send({ message: 'Please upload a file!' })
+  }
+    let fileBuffer = req.files.file.data 
+    let fileName = req.body.name
+    let fileipfs = await ipfs.add(fileBuffer) 
+    console.log(fileipfs)
+    const db = req.app.locals.db;
+    db.serialize(function(){
+      db.run("INSERT INTO Name (Hash,Size,fileName) VALUES (?,?,?)", [fileipfs.path,fileipfs.size,fileName], function(err){
+        if(err){
+          return console.error(err);
+        }
+        console.log('insert into db success');
+      })
+    })
+
+      res.status(200).send({
+      message: 'Uploaded the file successfully: ' + req.files.file.name,
+  })
+
   } catch (err) {
     console.log(err);
 

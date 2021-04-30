@@ -2,6 +2,12 @@ const cors = require("cors");
 const express = require("express");
 const app = express();
 
+var fileupload = require("express-fileupload");
+var sqlite3 = require('sqlite3').verbose();
+var db = new sqlite3.Database('./filelog.sqlite3');
+app.locals.db = db;
+app.use(fileupload());
+
 global.__basedir = __dirname;
 
 var corsOptions = {

@@ -4,7 +4,8 @@
   "description": "Node.js Express Download File Rest APis",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "keywords": [
     "node js",
@@ -21,7 +22,12 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
     "ipfs-http-client": "^49.0.4",
-    "multer": "^1.4.2"
+    "multer": "^1.4.2",
+    "sqlite3": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/sqlite3": "^3.1.7"
   }
 }
