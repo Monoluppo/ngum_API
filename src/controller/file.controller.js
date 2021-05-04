@@ -19,12 +19,17 @@ const upload = async (req, res) => {
       return res.status(400).send({ message: 'Please upload a file!' })
   }
     let fileBuffer = req.files.file.data 
-    let fileName = req.body.name
-    let fileipfs = await ipfs.add(fileBuffer) 
+    let fileName = req.body.fileName
+    let fileTopic = req.body.topic
+    let subjectID = req.body.subjectID
+    let isAssign = req.body.isAssignment
+    let memberID = req.body.memberID
+    let role = req.body.role
+    let fileipfs = await ipfs.add(fileBuffer)
     console.log(fileipfs)
     const db = req.app.locals.db;
     db.serialize(function(){
-      db.run("INSERT INTO Name (Hash,Size,fileName) VALUES (?,?,?)", [fileipfs.path,fileipfs.size,fileName], function(err){
+      db.run("INSERT INTO Files (topic,hash,subjectID,fileName,isAssignment,memberID,role) VALUES (?,?,?,?,?,?,?)", [fileTopic,fileipfs.path,subjectID,fileName,isAssign,memberID,role], function(err){
         if(err){
           return console.error(err);
         }
