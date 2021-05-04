@@ -14,11 +14,11 @@ const { globSource } = ipfsClient
 
 const upload = async (req, res) => {
   try {
-    
+
     if (req.files == undefined) {
       return res.status(400).send({ message: 'Please upload a file!' })
-  }
-    let fileBuffer = req.files.file.data 
+    }
+    let fileBuffer = req.files.file.data
     let fileName = req.body.fileName
     let fileTopic = req.body.topic
     let subjectID = req.body.subjectID
@@ -28,18 +28,18 @@ const upload = async (req, res) => {
     let fileipfs = await ipfs.add(fileBuffer)
     console.log(fileipfs)
     const db = req.app.locals.db;
-    db.serialize(function(){
-      db.run("INSERT INTO Files (topic,hash,subjectID,fileName,isAssignment,memberID,role) VALUES (?,?,?,?,?,?,?)", [fileTopic,fileipfs.path,subjectID,fileName,isAssign,memberID,role], function(err){
-        if(err){
+    db.serialize(function () {
+      db.run("INSERT INTO Files (topic,hash,subjectID,fileName,isAssignment,memberID,role) VALUES (?,?,?,?,?,?,?)", [fileTopic, fileipfs.path, subjectID, fileName, isAssign, memberID, role], function (err) {
+        if (err) {
           return console.error(err);
         }
         console.log('insert into db success');
       })
     })
 
-      res.status(200).send({
+    res.status(200).send({
       message: 'Uploaded the file successfully: ' + req.files.file.name,
-  })
+    })
 
   } catch (err) {
     console.log(err);
@@ -57,28 +57,34 @@ const upload = async (req, res) => {
 };
 
 const getListFiles = (req, res) => {
-  // Get files list from directory
-  const directoryPath = __basedir + "/uploads";
+  try {
 
-  fs.readdir(directoryPath, function (err, files) {
-    if (err) {
-      res.status(500).send({
-        message: "Unable to scan files!",
-      });
-    }
+    let SubjectID = req.params.subjectID
+    let MemberID = req.params.memberID
+    
 
-    let fileInfos = [];
+    const db = req.app.locals.db;
+    db.serialize(function () {
+      db.all("SELECT topic,hash,subjectID,fileName FROM Files WHERE subjectID =? AND memberID =? ", [SubjectID, MemberID], function (err,data) {
+        console.log(data)
+        if (err) {
+          return console.error(err);
+        }
+        console.log('get from db success');
+        console.log(SubjectID);
+        console.log(MemberID);
+      })
+    })
 
-    files.forEach((file) => {
-      fileInfos.push({
-        name: file,
-        url: baseUrl + file,
-      });
-    });
-
-    res.status(200).send(fileInfos);
-  });
+    res.status(200).send({
+      message: 'Your file is here: ',
+    })
+  }
+  catch (err) {
+    console.log(err);
+  }
 };
+
 
 const download = (req, res) => {
   const fileName = req.params.name;
