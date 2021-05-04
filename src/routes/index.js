@@ -4,7 +4,7 @@ const controller = require("../controller/file.controller");
 
 let routes = (app) => {
   router.post("/upload", controller.upload);
-  router.get("/getListFiles/:subjectID", controller.getListFiles);
+  router.get("/getListFiles", controller.getListFiles);
   router.get("/files/:name", controller.download);
 
   app.use(router);

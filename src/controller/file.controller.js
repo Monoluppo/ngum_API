@@ -59,9 +59,8 @@ const upload = async (req, res) => {
 const getListFiles = (req, res) => {
   try {
 
-    let SubjectID = req.params.subjectID
-    let MemberID = req.params.memberID
-    
+    let SubjectID = req.query.subjectID
+    let MemberID = req.query.memberID
 
     const db = req.app.locals.db;
     db.serialize(function () {
@@ -77,7 +76,7 @@ const getListFiles = (req, res) => {
     })
 
     res.status(200).send({
-      message: 'Your file is here: ',
+      message: 'Your file is here: https:/ipfs.io/ipfs/(hashcode)',
     })
   }
   catch (err) {
