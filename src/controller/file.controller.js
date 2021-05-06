@@ -98,8 +98,73 @@ const download = (req, res) => {
   });
 };
 
+
+const getLectureAssignment = (req, res) => {
+  try {
+
+    let SubjectID = req.query.subjectID
+    let isAssignment = req.query.isAssignment
+    let MemberID = req.query.memberID
+
+    const db = req.app.locals.db;
+    db.serialize(function () {
+      db.all("SELECT subjectID,isAssignment,memberID FROM Files WHERE subjectID =? AND isAssignment =? AND memberID =? ", [SubjectID,isAssignment,MemberID], function (err,data) {
+        console.log(data)
+        if (err) {
+          return console.error(err);
+        }
+        console.log('get from db success');
+        console.log(SubjectID);
+        console.log(isAssignment);
+        console.log(MemberID);
+      })
+    })
+
+    res.status(200).send({
+      message: 'Your lecture assignment is here: https:/ipfs.io/ipfs/(hashcode)',
+    })
+  }
+  catch (err) {
+    console.log(err);
+  }
+};
+
+const getAssignment = (req, res) => {
+  try {
+
+    let SubjectID = req.query.subjectID
+    let isAssignment = req.query.isAssignment
+    let topic = req.query.topic
+
+    const db = req.app.locals.db;
+    db.serialize(function () {
+      db.all("SELECT subjectID,isAssignment,topic FROM Files WHERE subjectID =? AND isAssignment =? AND topic =? ", [SubjectID,isAssignment,topic], function (err,data) {
+        console.log(data)
+        if (err) {
+          return console.error(err);
+        }
+        console.log('get from db success');
+        console.log(SubjectID);
+        console.log(isAssignment);
+        console.log(topic);
+      })
+    })
+
+  
+    res.status(200).send({
+      message: 'Your assignment in here: https:/ipfs.io/ipfs/(hashcode)',
+    })
+
+  }
+  catch (err) {
+    console.log(err);
+  }
+};
+
 module.exports = {
   upload,
   getListFiles,
   download,
+  getLectureAssignment,
+  getAssignment,
 };

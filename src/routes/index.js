@@ -5,9 +5,10 @@ const controller = require("../controller/file.controller");
 let routes = (app) => {
   router.post("/upload", controller.upload);
   router.get("/getListFiles", controller.getListFiles);
-  router.get("/files/:name", controller.download);
-
-  app.use(router);
+  router.get("/download", controller.download);
+  router.get("/getLectureAssignment", controller.getLectureAssignment);
+  router.get("/getAssignment", controller.getAssignment);
+  app.use(router); 
 };
 
 module.exports = routes;
