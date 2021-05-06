@@ -29,10 +29,11 @@ const upload = async (req, res) => {
     console.log(fileipfs)
     const db = req.app.locals.db;
     db.serialize(function () {
-      db.run("INSERT INTO Files (topic,hash,subjectID,fileName,isAssignment,memberID,role) VALUES (?,?,?,?,?,?,?)", [fileTopic, fileipfs.path, subjectID, fileName, isAssign, memberID, role], function (err) {
+      db.run("INSERT INTO Files (topic,hash,subjectID,fileName,isAssignment,memberID,role) VALUES (?,?,?,?,?,?,?)", 
+      [fileTopic, fileipfs.path, subjectID, fileName, isAssign, memberID, role], function (err,data) {
         if (err) {
           return console.error(err);
-        }
+        } 
         console.log('insert into db success');
       })
     })
@@ -64,20 +65,25 @@ const getListFiles = (req, res) => {
 
     const db = req.app.locals.db;
     db.serialize(function () {
-      db.all("SELECT topic,hash,subjectID,fileName FROM Files WHERE subjectID =? AND memberID =? ", [SubjectID, MemberID], function (err,data) {
+      db.all("SELECT topic,hash,subjectID,fileName FROM Files WHERE subjectID =? AND memberID =? ", 
+      [SubjectID, MemberID], function (err,data) {
         console.log(data)
         if (err) {
           return console.error(err);
+        } else {
+          res.status(200).send(data);
         }
+        
+
         console.log('get from db success');
         console.log(SubjectID);
         console.log(MemberID);
       })
     })
 
-    res.status(200).send({
-      message: 'Your file is here: https:/ipfs.io/ipfs/(hashcode)',
-    })
+    // res.status(200).send({
+    //   message: 'Your file is here: https:/ipfs.io/ipfs/(hashcode)',
+    // })
   }
   catch (err) {
     console.log(err);
@@ -108,10 +114,14 @@ const getLectureAssignment = (req, res) => {
 
     const db = req.app.locals.db;
     db.serialize(function () {
-      db.all("SELECT subjectID,isAssignment,memberID FROM Files WHERE subjectID =? AND isAssignment =? AND memberID =? ", [SubjectID,isAssignment,MemberID], function (err,data) {
-        console.log(data)
+      db.all("SELECT subjectID,isAssignment,memberID FROM Files WHERE subjectID =? AND isAssignment =? AND memberID =? ",
+       [SubjectID,isAssignment,MemberID], function (err,data) {
+        console.log('data',data)
         if (err) {
           return console.error(err);
+        } 
+        else {
+          res.status(200).send(data);
         }
         console.log('get from db success');
         console.log(SubjectID);
@@ -120,9 +130,9 @@ const getLectureAssignment = (req, res) => {
       })
     })
 
-    res.status(200).send({
-      message: 'Your lecture assignment is here: https:/ipfs.io/ipfs/(hashcode)',
-    })
+    // res.status(200).send({
+    //   message: 'Your lecture assignment is here: https:/ipfs.io/ipfs/(hashcode)',
+    // })
   }
   catch (err) {
     console.log(err);
@@ -142,7 +152,11 @@ const getAssignment = (req, res) => {
         console.log(data)
         if (err) {
           return console.error(err);
+        } 
+        else {
+          res.status(200).send(data);
         }
+
         console.log('get from db success');
         console.log(SubjectID);
         console.log(isAssignment);
@@ -151,9 +165,9 @@ const getAssignment = (req, res) => {
     })
 
   
-    res.status(200).send({
-      message: 'Your assignment in here: https:/ipfs.io/ipfs/(hashcode)',
-    })
+    // res.status(200).send({
+    //   message: 'Your assignment in here: https:/ipfs.io/ipfs/(hashcode)',
+    // })
 
   }
   catch (err) {
