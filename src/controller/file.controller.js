@@ -12,10 +12,13 @@ const { globSource } = ipfsClient
 
 // POST upload file
 const upload = async (req, res) => {
+	
 	try {
 		if (req.files == undefined) {
+			console.log('file is undefined')
 			return res.status(400).send({ message: 'Please upload a file!' })
 		}
+		console.log('upload ', res)
 		let fileBuffer = req.files.file.data
 		let fileName = req.body.fileName
 		let fileTopic = req.body.topic
@@ -37,6 +40,7 @@ const upload = async (req, res) => {
 					} else {
 						res.status(200).send({
 							message: 'Success',
+							hash: fileipfs.path
 						})
 					}
 				}
@@ -85,8 +89,8 @@ const getLectureAssignmentStudent = (req, res) => {
 		const db = req.app.locals.db
 		db.serialize(function () {
 			db.all(
-				'SELECT subjectID,isAssignment,memberID FROM Files WHERE subjectID =? AND isAssignment =? AND memberID =? ',
-				[SubjectID, isAssignment, MemberID],
+				'SELECT subjectID,isAssignment,topic,hash FROM Files WHERE subjectID =? AND LENGTH(memberID) = 4',
+				[SubjectID],
 				function (err, data) {
 					if (err) {
 						return console.error(err)
@@ -113,7 +117,7 @@ const getAssignmentTeacher = (req, res) => {
 		const db = req.app.locals.db
 		db.serialize(function () {
 			db.all(
-				'SELECT subjectID,isAssignment,topic FROM Files WHERE subjectID =? AND isAssignment =? AND topic =? ',
+				'SELECT subjectID,isAssignment,topic,hash,memberID FROM Files WHERE subjectID =? AND isAssignment =? AND topic =? AND LENGTH(memberID) = 10' ,
 				[SubjectID, isAssignment, topic],
 				function (err, data) {
 					if (err) {

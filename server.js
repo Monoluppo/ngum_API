@@ -11,7 +11,7 @@ app.use(fileupload());
 global.__basedir = __dirname;
 
 var corsOptions = {
-  origin: "http://localhost:8081"
+  origin: "http://localhost:3000"
 };
 
 app.use(cors(corsOptions));
